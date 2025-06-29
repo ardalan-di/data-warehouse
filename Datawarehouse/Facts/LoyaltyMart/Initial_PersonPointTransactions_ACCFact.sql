@@ -7,9 +7,9 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Initial_PersonPointTransactions_ACCFact', 'PersonPointTransactions_ACCFact', 'Procedure started for initial full load', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
@@ -50,7 +50,7 @@ BEGIN
 			agg.TotalPointValueUSD,
 			agg.TotalNumberOfTransactions,
 			agg.TotalDistinctFlightsEarnedOn
-		FROM 
+		FROM
 			LifetimeAggregates agg
         LEFT JOIN LatestTier lt ON agg.PersonID = lt.PersonID AND lt.rn = 1
         INNER JOIN [DW].[DimPerson] current_person ON agg.PersonID = current_person.PersonID AND current_person.EffectiveTo IS NULL;

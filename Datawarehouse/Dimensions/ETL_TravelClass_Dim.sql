@@ -33,38 +33,38 @@ BEGIN
     INSERT INTO DW.Temp_TravelClass_Dim (
       TravelClassID,
       ClassName,
-      Capacity -- ADDED
+      Capacity
     )
     SELECT
       tc.TravelClassID,
       tc.ClassName,
-      tc.Capacity -- ADDED
+      tc.Capacity
     FROM SA.TravelClass AS tc
     WHERE tc.StagingLastUpdateTimestampUTC > @LastRunTime;
 
     UPDATE d
     SET
       d.ClassName = t.ClassName,
-      d.Capacity  = t.Capacity -- ADDED
+      d.Capacity  = t.Capacity
     FROM DW.DimTravelClass AS d
     JOIN DW.Temp_TravelClass_Dim AS t
       ON d.TravelClassKey = t.TravelClassID
     WHERE
       (
         ISNULL(d.ClassName, '') <> ISNULL(t.ClassName, '')
-        OR ISNULL(d.Capacity, -1) <> ISNULL(t.Capacity, -1) 
+        OR ISNULL(d.Capacity, -1) <> ISNULL(t.Capacity, -1)
       );
     SET @RowsUpdated = @@ROWCOUNT;
 
     INSERT INTO DW.DimTravelClass (
       TravelClassKey,
       ClassName,
-      Capacity 
+      Capacity
     )
     SELECT
       t.TravelClassID,
       t.ClassName,
-      t.Capacity 
+      t.Capacity
     FROM DW.Temp_TravelClass_Dim AS t
     WHERE NOT EXISTS (
       SELECT 1 FROM DW.DimTravelClass AS d

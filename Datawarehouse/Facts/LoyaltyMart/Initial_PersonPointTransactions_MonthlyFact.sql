@@ -2,17 +2,17 @@ CREATE OR ALTER PROCEDURE [DW].[Initial_PersonPointTransactions_MonthlyFact]
 AS
 BEGIN
 	SET NOCOUNT ON;
-    
-    -- Added iterative logic to the initial load
+
+
 	DECLARE @StartDate date;
 	DECLARE @EndDate date;
 
-	SELECT 
+	SELECT
 		@StartDate = MIN(TransactionDateKey),
 		@EndDate = MAX(TransactionDateKey)
-	FROM 
+	FROM
 		[DW].[LoyaltyPointTransaction_TransactionalFact];
-	
+
 	IF @StartDate IS NULL
 	BEGIN
 		RAISERROR('No data found in LoyaltyPointTransaction_TransactionalFact to process.', 0, 1) WITH NOWAIT;
@@ -21,7 +21,7 @@ BEGIN
 
 	DECLARE @CurrentMonthStart date = DATEFROMPARTS(YEAR(@StartDate), MONTH(@StartDate), 1);
 	DECLARE @EndMonthStart date = DATEFROMPARTS(YEAR(@EndDate), MONTH(@EndDate), 1);
-	
+
 	WHILE @CurrentMonthStart <= @EndMonthStart
 	BEGIN
 		DECLARE @LogID BIGINT;
@@ -29,9 +29,9 @@ BEGIN
 		DECLARE @RowCount INT;
         DECLARE @CurrentMonthEnd date = EOMONTH(@CurrentMonthStart);
 
-		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 		VALUES ('Initial_PersonPointTransactions_MonthlyFact', 'PersonPointTransactions_MonthlyFact', 'Procedure started for month: ' + CONVERT(varchar, @CurrentMonthStart, 101), @StartTime, 'Running');
-			
+
 		SET @LogID = SCOPE_IDENTITY();
 
 		BEGIN TRY
@@ -66,11 +66,11 @@ BEGIN
 				agg.MonthlyPointValueUSD,
 				agg.MonthlyNumberOfTransactions,
 				agg.MonthlyDistinctFlightsEarnedOn
-			FROM 
+			FROM
 				MonthlyAggregates agg
 			LEFT JOIN [DW].[DimPerson] historical_person ON agg.HistoricalPersonKey = historical_person.PersonKey
 			LEFT JOIN [DW].[DimPerson] person_eom ON historical_person.PersonID = person_eom.PersonID
-                AND @CurrentMonthEnd >= person_eom.EffectiveFrom 
+                AND @CurrentMonthEnd >= person_eom.EffectiveFrom
 				AND @CurrentMonthEnd < ISNULL(person_eom.EffectiveTo, '9999-12-31')
             LEFT JOIN [DW].[DimLoyaltyTier] historical_tier ON agg.HistoricalLoyaltyTierKey = historical_tier.LoyaltyTierKey
             LEFT JOIN [DW].[DimLoyaltyTier] tier_eom ON historical_tier.LoyaltyTierID = tier_eom.LoyaltyTierID

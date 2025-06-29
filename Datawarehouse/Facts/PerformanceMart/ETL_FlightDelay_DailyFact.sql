@@ -17,7 +17,7 @@ BEGIN
     BEGIN
         SET @StartDate = DATEADD(day, 1, @StartDate);
     END;
-	
+
 	IF @StartDate > @EndDate
 	BEGIN
 		RAISERROR('The FlightDelay_DailyFact table is up to date!', 0, 1) WITH NOWAIT;
@@ -25,19 +25,19 @@ BEGIN
 	END
 
 	DECLARE @CurrentDate date = @StartDate;
-	
+
 	WHILE @CurrentDate <= @EndDate
 	BEGIN
 		DECLARE @LogID BIGINT;
 		DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 		DECLARE @RowCount INT;
 
-		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 		VALUES ('Load_FlightDelay_DailyFact', 'FlightDelay_DailyFact', 'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101), @StartTime, 'Running');
-			
+
 		SET @LogID = SCOPE_IDENTITY();
 
-		BEGIN TRY            
+		BEGIN TRY
 			WITH DailyAggregates AS (
 				SELECT
 					ac.AirlineID, fd.DepartureAirportID, fd.DestinationAirportID,

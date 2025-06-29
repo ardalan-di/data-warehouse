@@ -1,5 +1,5 @@
 CREATE TABLE [DW].[DimPerson] (
-  -- Surrogate key for SCD Type 2 versions
+
   [PersonKey]                INT             IDENTITY(1,1) NOT NULL PRIMARY KEY,
   [PersonID]                 INT             NOT NULL,
   [NationalCode]             NVARCHAR(255)   NULL,

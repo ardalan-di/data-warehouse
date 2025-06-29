@@ -45,7 +45,7 @@ BEGIN
       lt.Benefits
     FROM SA.LoyaltyTier AS lt
     WHERE lt.StagingLastUpdateTimestampUTC > @LastRunTime;
-    
+
     UPDATE d
     SET
       d.EffectiveTo         = @StartTime,

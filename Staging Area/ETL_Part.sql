@@ -31,14 +31,14 @@ BEGIN
           ON TARGET.PartID = SOURCE.PartID
 
         WHEN MATCHED AND EXISTS (
-            SELECT 
+            SELECT
                 SOURCE.Name,
                 SOURCE.PartNumber,
                 SOURCE.Manufacturer,
                 SOURCE.WarrantyPeriodMonths,
                 SOURCE.Category
             EXCEPT
-            SELECT 
+            SELECT
                 TARGET.Name,
                 TARGET.PartNumber,
                 TARGET.Manufacturer,

@@ -7,13 +7,13 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Load_CrewAssignmentEvent_Factless', 'CrewAssignmentEvent_Factless', 'Procedure started for incremental merge', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
-		
+
 		MERGE [DW].[CrewAssignmentEvent_Factless] AS Target
 		USING (
 			SELECT

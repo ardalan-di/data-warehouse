@@ -3,7 +3,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- List of all expected ETL procedures in SA schema
+
     DECLARE @procs TABLE (ProcName NVARCHAR(128));
     INSERT INTO @procs (ProcName) VALUES
         (N'ETL_Account'),

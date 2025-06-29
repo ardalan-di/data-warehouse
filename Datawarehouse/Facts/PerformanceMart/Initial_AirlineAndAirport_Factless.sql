@@ -7,14 +7,14 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Initial_AirlineAndAirport_Factless', 'AirlineAndAirport_Factless', 'Procedure started for initial full load', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
 		WITH AirlineAirportRelations AS (
-			-- Select all departure relationships
+
 			SELECT
 				ac.AirlineID,
 				fd.DepartureAirportID AS AirportID
@@ -22,8 +22,8 @@ BEGIN
 				[SA].[FlightDetail] fd
 			INNER JOIN
 				[SA].[Aircraft] ac ON fd.AircraftID = ac.AircraftID
-			
-			UNION 
+
+			UNION
 
 			SELECT
 				ac.AirlineID,
@@ -40,7 +40,7 @@ BEGIN
 		SELECT DISTINCT
 			AirlineID,
 			AirportID
-		FROM 
+		FROM
 			AirlineAirportRelations;
 
 

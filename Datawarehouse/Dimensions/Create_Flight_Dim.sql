@@ -1,11 +1,11 @@
 CREATE TABLE [DW].[DimFlight] (
-  [FlightDetailID]      INT PRIMARY KEY,        
-  [DepartureAirportName] NVARCHAR(100),         
-  [DestinationAirportName] NVARCHAR(100),      
+  [FlightDetailID]      INT PRIMARY KEY,
+  [DepartureAirportName] NVARCHAR(100),
+  [DestinationAirportName] NVARCHAR(100),
   [DepartureDateTime]   DATETIME,
   [ArrivalDateTime]     DATETIME,
   [FlightDurationMinutes] INT,
-  [AircraftName]        NVARCHAR(100),          
+  [AircraftName]        NVARCHAR(100),
   [FlightCapacity]      INT,
   [TotalCost]           DECIMAL(18,2)
 );

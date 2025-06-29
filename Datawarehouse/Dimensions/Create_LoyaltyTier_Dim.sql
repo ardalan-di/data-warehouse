@@ -21,5 +21,5 @@ GO
 
 CREATE NONCLUSTERED INDEX IX_DimLoyaltyTier_MinPointsIsCurrent
 ON [DW].[DimLoyaltyTier] (MinPointsIsCurrent)
-WHERE MinPointsIsCurrent = 1; 
+WHERE MinPointsIsCurrent = 1;
 GO

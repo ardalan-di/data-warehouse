@@ -6,13 +6,13 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Load_FlightOperation_Factless', 'FlightOperation_Factless', 'Procedure started for incremental merge', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
-		
+
 		MERGE [DW].[FactFlightOperation_Factless] AS Target
 		USING (
 			SELECT
@@ -22,9 +22,9 @@ BEGIN
 				ac.AirlineID AS AirlineKey,
 				fd.AircraftID AS AircraftKey,
 				CASE
-					WHEN fo.CancelFlag = 1 THEN 3 -- Canceled
-					WHEN fo.DelayMinutes > 0 THEN 2 -- Delayed
-					ELSE 1 -- On-Time
+					WHEN fo.CancelFlag = 1 THEN 3
+					WHEN fo.DelayMinutes > 0 THEN 2
+					ELSE 1
 				END AS OperationTypeKey
 			FROM
 				[SA].[FlightOperation] fo

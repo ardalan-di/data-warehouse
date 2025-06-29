@@ -1,7 +1,7 @@
-CREATE TABLE [DW].[FlightDelay_ACCFact] (  
-    [AirlineID]              INT    NOT NULL,  
-    [DepartureAirportID]     INT    NOT NULL,  
-    [ArrivalAirportID]       INT    NOT NULL,  
+CREATE TABLE [DW].[FlightDelay_ACCFact] (
+    [AirlineID]              INT    NOT NULL,
+    [DepartureAirportID]     INT    NOT NULL,
+    [ArrivalAirportID]       INT    NOT NULL,
 
     [TotalFlightsNumber]            INT    NULL,
     [TotalDelayedFlightsNumber]          INT    NULL,

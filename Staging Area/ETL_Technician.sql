@@ -31,11 +31,11 @@ BEGIN
           ON TARGET.TechnicianID = SOURCE.TechnicianID
 
         WHEN MATCHED AND EXISTS (
-            SELECT 
+            SELECT
                 SOURCE.PersonID,
                 SOURCE.Specialty
             EXCEPT
-            SELECT 
+            SELECT
                 TARGET.PersonID,
                 TARGET.Specialty
         ) THEN

@@ -7,13 +7,13 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Load_PassengerActivity_ACCFact', 'PassengerActivity_ACCFact', 'Procedure started for incremental merge', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
-		
+
 		TRUNCATE TABLE [DW].[Temp_LifetimeSourceData];
 
 		WITH LifetimeSummableAggregates AS (

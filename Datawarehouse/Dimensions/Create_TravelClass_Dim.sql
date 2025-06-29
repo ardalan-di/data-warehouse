@@ -1,5 +1,5 @@
 CREATE TABLE [DW].[DimTravelClass] (
-    [TravelClassKey] INT PRIMARY KEY, 
+    [TravelClassKey] INT PRIMARY KEY,
     [ClassName]      NVARCHAR(50) NOT NULL,
     [Capacity]       INT NULL
 );

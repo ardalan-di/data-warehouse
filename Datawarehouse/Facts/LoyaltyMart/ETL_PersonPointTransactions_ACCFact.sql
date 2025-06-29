@@ -7,16 +7,16 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Load_PersonPointTransactions_ACCFact', 'PersonPointTransactions_ACCFact', 'Procedure started for incremental merge', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
-		
+
 		MERGE [DW].[PersonPointTransactions_ACCFact] AS Target
 		USING (
-			-- Subquery to get the fully aggregated lifetime data
+
 			SELECT
 				current_person.PersonKey,
 				lt.LoyaltyTierKey,
@@ -26,8 +26,8 @@ BEGIN
 				agg.TotalPointValueUSD,
 				agg.TotalNumberOfTransactions,
 				agg.TotalDistinctFlightsEarnedOn
-			FROM 
-			( -- CTE for lifetime aggregates
+			FROM
+			(
 				SELECT
 					historical_person.PersonID,
 					SUM(fact.PointsEarned) AS TotalPointsEarned,
@@ -41,8 +41,8 @@ BEGIN
 				GROUP BY
 					historical_person.PersonID
 			) agg
-			LEFT JOIN 
-			( -- CTE for latest tier
+			LEFT JOIN
+			(
 				SELECT
 					historical_person.PersonID,
 					fact.LoyaltyTierKey,
@@ -51,7 +51,7 @@ BEGIN
 					[DW].[LoyaltyPointTransaction_TransactionalFact] fact
 				INNER JOIN [DW].[DimPerson] historical_person ON fact.PersonKey = historical_person.PersonKey
 			) lt ON agg.PersonID = lt.PersonID AND lt.rn = 1
-			INNER JOIN 
+			INNER JOIN
 				[DW].[DimPerson] current_person ON agg.PersonID = current_person.PersonID AND current_person.EffectiveTo IS NULL
 		) AS Source
 		ON (Target.PersonKey = Source.PersonKey)

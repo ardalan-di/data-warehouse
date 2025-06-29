@@ -6,15 +6,15 @@ BEGIN
     DECLARE @StartDate date;
     DECLARE @EndDate date;
 
-    SELECT 
+    SELECT
         @StartDate = MAX(CAST(TransactionDateKey AS DATE))
-    FROM 
+    FROM
         [DW].[LoyaltyPointTransaction_TransactionalFact];
 
-    
-    SELECT 
+
+    SELECT
         @EndDate = MAX(CAST(TransactionDate AS DATE))
-    FROM 
+    FROM
         [SA].[PointsTransaction];
 
     IF @EndDate IS NULL
@@ -32,7 +32,7 @@ BEGIN
         RETURN;
     END
 
-    DECLARE @CurrentDate date = DATEADD(day, 1, @StartDate); 
+    DECLARE @CurrentDate date = DATEADD(day, 1, @StartDate);
 
     WHILE @CurrentDate <= @EndDate
     BEGIN
@@ -40,51 +40,51 @@ BEGIN
         DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
         DECLARE @RowCount INT;
 
-        INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+        INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
         VALUES (
-            'Load_FactLoyaltyPointTransaction_TransactionalFact', 
-            'LoyaltyPointTransaction_TransactionalFact', 
-            'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101), 
+            'Load_FactLoyaltyPointTransaction_TransactionalFact',
+            'LoyaltyPointTransaction_TransactionalFact',
+            'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101),
             @StartTime, 'Running'
         );
-        
+
         SET @LogID = SCOPE_IDENTITY();
 
-        BEGIN TRY			
+        BEGIN TRY
 
             INSERT INTO [DW].[Temp_DailyLoyaltyTransactions]
             (
-                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID, 
-                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate, 
+                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID,
+                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate,
                 PointConversionRateID, ServiceOfferingID, FlightDetailID
             )
-            SELECT 
-                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID, 
-                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate, 
+            SELECT
+                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID,
+                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate,
                 PointConversionRateID, ServiceOfferingID, FlightDetailID
             FROM [SA].[PointsTransaction]
             WHERE CAST(TransactionDate AS DATE) = @CurrentDate;
 
-            IF @@ROWCOUNT = 0 
+            IF @@ROWCOUNT = 0
             BEGIN
-                UPDATE DW.ETL_Log 
-                SET ChangeDescription = 'No loyalty transactions found for date: ' + CONVERT(varchar, @CurrentDate, 101), 
-                    RowsAffected = 0, 
-                    DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()), 
-                    Status = 'Success' 
+                UPDATE DW.ETL_Log
+                SET ChangeDescription = 'No loyalty transactions found for date: ' + CONVERT(varchar, @CurrentDate, 101),
+                    RowsAffected = 0,
+                    DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()),
+                    Status = 'Success'
                 WHERE LogID = @LogID;
                 SET @CurrentDate = DATEADD(day, 1, @CurrentDate);
                 CONTINUE;
             END
 
             INSERT INTO [DW].[Temp_EnrichedLoyaltyData] (
-                TransactionDateKey, PersonKey, AccountKey, LoyaltyTierKey, TransactionTypeKey, 
-                ConversionRateKey, FlightKey, ServiceOfferingKey, PointsChange, CurrencyValue, 
+                TransactionDateKey, PersonKey, AccountKey, LoyaltyTierKey, TransactionTypeKey,
+                ConversionRateKey, FlightKey, ServiceOfferingKey, PointsChange, CurrencyValue,
                 ConversionRateSnapshot, BalanceAfterTransaction
             )
             SELECT
-                -- Dimension Keys
-                pt.TransactionDate,    
+
+                pt.TransactionDate,
                 ISNULL(dp.PersonKey, -1),
                 pt.AccountID,
                 ISNULL(dlt.LoyaltyTierKey, -1),
@@ -92,16 +92,16 @@ BEGIN
                 ISNULL(dcr.ConversionRateKey, -1),
                 pt.FlightDetailID,
                 ISNULL(dso.ServiceOfferingID, -1),
-                -- Measures
+
                 pt.PointsChange,
                 pt.CurrencyValue,
-                ISNULL(dcr.Rate, pt.ConversionRate),  
+                ISNULL(dcr.Rate, pt.ConversionRate),
                 pt.BalanceAfterTransaction
             FROM [DW].[Temp_DailyLoyaltyTransactions] pt
             INNER JOIN [SA].[Account] acc ON pt.AccountID = acc.AccountID
             INNER JOIN [SA].[Passenger] pass ON acc.PassengerID = pass.PassengerID
             LEFT JOIN [DW].[DimPerson] dp ON pass.PersonID = dp.PersonID
-                AND pt.TransactionDate >= dp.EffectiveFrom 
+                AND pt.TransactionDate >= dp.EffectiveFrom
                 AND pt.TransactionDate < ISNULL(dp.EffectiveTo, '9999-12-31')
             LEFT JOIN [SA].[AccountTierHistory] ath ON pt.AccountID = ath.AccountID
                 AND pt.TransactionDate >= ath.EffectiveFrom
@@ -128,28 +128,28 @@ BEGIN
                 ed.ConversionRateSnapshot,
                 ed.BalanceAfterTransaction
             FROM [DW].[Temp_EnrichedLoyaltyData] ed;
-            
+
             SET @RowCount = @@ROWCOUNT;
 
             TRUNCATE TABLE [DW].[Temp_DailyLoyaltyTransactions];
             TRUNCATE TABLE [DW].[Temp_EnrichedLoyaltyData];
 
 
-            UPDATE DW.ETL_Log 
-            SET ChangeDescription = 'Load complete for date: ' + CONVERT(varchar, @CurrentDate, 101), 
-                RowsAffected = @RowCount, 
-                DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()), 
-                Status = 'Success' 
+            UPDATE DW.ETL_Log
+            SET ChangeDescription = 'Load complete for date: ' + CONVERT(varchar, @CurrentDate, 101),
+                RowsAffected = @RowCount,
+                DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()),
+                Status = 'Success'
             WHERE LogID = @LogID;
 
         END TRY
         BEGIN CATCH
             DECLARE @ErrMsg NVARCHAR(MAX) = ERROR_MESSAGE();
-            UPDATE DW.ETL_Log 
-            SET ChangeDescription = 'Load failed for date: ' + CONVERT(varchar, @CurrentDate, 101), 
-                DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()), 
-                Status = 'Error', 
-                Message = @ErrMsg 
+            UPDATE DW.ETL_Log
+            SET ChangeDescription = 'Load failed for date: ' + CONVERT(varchar, @CurrentDate, 101),
+                DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()),
+                Status = 'Error',
+                Message = @ErrMsg
             WHERE LogID = @LogID;
             THROW;
         END CATCH

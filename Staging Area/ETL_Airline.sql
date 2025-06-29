@@ -31,7 +31,7 @@ BEGIN
           ON TARGET.AirlineID = SOURCE.AirlineID
 
         WHEN MATCHED AND EXISTS (
-            SELECT 
+            SELECT
                 SOURCE.Name,
                 SOURCE.Country,
                 SOURCE.FoundedDate,
@@ -40,7 +40,7 @@ BEGIN
                 SOURCE.Website,
                 SOURCE.Current_IATA_Code
             EXCEPT
-            SELECT 
+            SELECT
                 TARGET.Name,
                 TARGET.Country,
                 TARGET.FoundedDate,

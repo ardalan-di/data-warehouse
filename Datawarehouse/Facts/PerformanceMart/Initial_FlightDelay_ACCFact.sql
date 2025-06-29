@@ -7,9 +7,9 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Initial_FlightDelay_ACCFact', 'FlightDelay_ACCFact', 'Procedure started for initial full load', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
@@ -23,9 +23,9 @@ BEGIN
 				SUM(CASE WHEN fo.CancelFlag = 1 THEN 1 ELSE 0 END) AS TotalCancelledFlightsNumber,
 				AVG(CAST(fo.DelayMinutes AS FLOAT)) AS TotalAvgDepartureDelayMinutes,
 				MAX(fo.DelayMinutes) AS TotalMaxDelayMinutes
-			FROM 
+			FROM
 				[SA].[FlightOperation] fo
-			INNER JOIN 
+			INNER JOIN
 				[SA].[FlightDetail] fd ON fo.FlightDetailID = fd.FlightDetailID
 			INNER JOIN
 				[SA].[Aircraft] ac ON fd.AircraftID = ac.AircraftID

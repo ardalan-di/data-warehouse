@@ -25,12 +25,12 @@ BEGIN
     INSERT INTO DW.DimTravelClass (
         TravelClassKey,
         ClassName,
-        Capacity 
+        Capacity
     )
     SELECT
         tc.TravelClassID,
         tc.ClassName,
-        tc.Capacity 
+        tc.Capacity
     FROM SA.TravelClass AS tc;
 
     SET @RowsInserted = @@ROWCOUNT;

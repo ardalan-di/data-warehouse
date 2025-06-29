@@ -8,7 +8,7 @@ BEGIN
         @RowsAffected  INT,
         @LogID         BIGINT;
 
-    -- 1) Assume fatal: insert initial log entry
+
     INSERT INTO [SA].[ETL_Log] (
         ProcedureName,
         SourceTable,

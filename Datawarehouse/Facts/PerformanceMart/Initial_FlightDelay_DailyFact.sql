@@ -6,14 +6,14 @@ BEGIN
 	DECLARE @StartDate date;
 	DECLARE @EndDate date;
 
-	SELECT 
+	SELECT
 		@StartDate = MIN(CAST(ActualDepartureDateTime AS DATE)),
 		@EndDate = MAX(CAST(ActualDepartureDateTime AS DATE))
-	FROM 
+	FROM
 		[SA].[FlightOperation]
     WHERE
         ActualDepartureDateTime IS NOT NULL;
-	
+
 	IF @StartDate IS NULL
 	BEGIN
 		RAISERROR('No valid flight operations data found to process.', 0, 1) WITH NOWAIT;
@@ -28,9 +28,9 @@ BEGIN
 		DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 		DECLARE @RowCount INT;
 
-		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 		VALUES ('Initial_FlightDelay_DailyFact', 'FlightDelay_DailyFact', 'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101), @StartTime, 'Running');
-			
+
 		SET @LogID = SCOPE_IDENTITY();
 
 		BEGIN TRY
@@ -44,13 +44,13 @@ BEGIN
 					SUM(CASE WHEN fo.CancelFlag = 1 THEN 1 ELSE 0 END) AS DailyCancelledFlightsNumber,
 					AVG(CAST(fo.DelayMinutes AS FLOAT)) AS DailyAvgDepartureDelayMinutes,
 					MAX(fo.DelayMinutes) AS DailyMaxDelayMinutes
-				FROM 
+				FROM
 					[SA].[FlightOperation] fo
-				INNER JOIN 
+				INNER JOIN
 					[SA].[FlightDetail] fd ON fo.FlightDetailID = fd.FlightDetailID
 				INNER JOIN
 					[SA].[Aircraft] ac ON fd.AircraftID = ac.AircraftID
-				WHERE 
+				WHERE
 					CAST(fo.ActualDepartureDateTime AS DATE) = @CurrentDate
 				GROUP BY
 					ac.AirlineID,

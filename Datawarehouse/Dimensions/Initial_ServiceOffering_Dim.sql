@@ -34,7 +34,7 @@ BEGIN
       so.ServiceOfferingID,
       so.OfferingName,
       so.Description,
-      tc.ClassName, 
+      tc.ClassName,
       so.TotalCost,
       ISNULL(
         STUFF((

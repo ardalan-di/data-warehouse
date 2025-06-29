@@ -43,12 +43,12 @@ BEGIN
     )
     SELECT
       f.FlightDetailID,
-      dep.City + ' Airport',         
+      dep.City + ' Airport',
       dest.City + ' Airport',
       f.DepartureDateTime,
       f.ArrivalDateTime,
       DATEDIFF(MINUTE, f.DepartureDateTime, f.ArrivalDateTime),
-      a.Model,                        
+      a.Model,
       f.FlightCapacity,
       f.TotalCost
     FROM SA.FlightDetail AS f

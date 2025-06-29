@@ -1,5 +1,5 @@
 CREATE TABLE [DW].[DimLoyaltyTransactionType] (
-  LoyaltyTransactionTypeID INT PRIMARY KEY,   
+  LoyaltyTransactionTypeID INT PRIMARY KEY,
   TypeName NVARCHAR(250)
 );
 GO

@@ -6,12 +6,12 @@ BEGIN
 	DECLARE @StartDate date;
 	DECLARE @EndDate date;
 
-	SELECT 
+	SELECT
 		@StartDate = MIN(FlightDateKey),
 		@EndDate = MAX(FlightDateKey)
-	FROM 
+	FROM
 		[DW].[PassengerTicket_TransactionalFact];
-	
+
 	IF @StartDate IS NULL
 	BEGIN
 		RAISERROR('No data found in PassengerTicket_TransactionalFact to process.', 0, 1) WITH NOWAIT;
@@ -20,16 +20,16 @@ BEGIN
 
 	DECLARE @CurrentYear INT = YEAR(@StartDate);
 	DECLARE @EndYear INT = YEAR(@EndDate);
-	
+
 	WHILE @CurrentYear <= @EndYear
 	BEGIN
 		DECLARE @LogID BIGINT;
 		DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 		DECLARE @RowCount INT;
 
-		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 		VALUES ('Initial_PassengerActivity_YearlyFact', 'PassengerActivity_YearlyFact', 'Procedure started for year: ' + CAST(@CurrentYear AS VARCHAR), @StartTime, 'Running');
-			
+
 		SET @LogID = SCOPE_IDENTITY();
 
 		BEGIN TRY
@@ -50,8 +50,8 @@ BEGIN
 				INNER JOIN
 					[DW].[DimPayment] dp ON fptt.PaymentKey = dp.PaymentKey
 				WHERE
-					YEAR(fptt.FlightDateKey) = @CurrentYear 
-					AND dp.PaymentStatus = 'Completed' 
+					YEAR(fptt.FlightDateKey) = @CurrentYear
+					AND dp.PaymentStatus = 'Completed'
 				GROUP BY
 					fptt.TicketHolderPersonKey
 			)
@@ -69,7 +69,7 @@ BEGIN
 				YearlyMinFlightDistance
 			)
 			SELECT
-				DATEFROMPARTS(@CurrentYear, 1, 1), 
+				DATEFROMPARTS(@CurrentYear, 1, 1),
 				current_person.PersonKey,
 				agg.TotalAmountPaid,
 				agg.TotalKilometersFlown,
@@ -80,7 +80,7 @@ BEGIN
 				agg.TotalFlights,
 				agg.MaxFlightDistanceKM,
 				agg.MinFlightDistanceKM
-			FROM 
+			FROM
 				YearlyAggregates agg
 			INNER JOIN [DW].[DimPerson] historical_person ON agg.TicketHolderPersonKey = historical_person.PersonKey
 			INNER JOIN [DW].[DimPerson] current_person ON historical_person.PersonID = current_person.PersonID AND current_person.PassportNumberIsCurrent = 1;
@@ -98,7 +98,7 @@ BEGIN
 
 		SET @CurrentYear = @CurrentYear + 1;
 
-	END; 
+	END;
 
 	RAISERROR('PassengerActivity_YearlyFact loading process has completed.', 0, 1) WITH NOWAIT;
 	SET NOCOUNT OFF;

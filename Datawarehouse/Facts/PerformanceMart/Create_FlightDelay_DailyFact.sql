@@ -1,8 +1,8 @@
 CREATE TABLE [DW].[FlightDelay_DailyFact] (
-    [DateID]         DATE    NOT NULL,  
-    [AirlineID]              INT    NOT NULL,  
-    [DepartureAirportID]     INT    NOT NULL,  
-    [ArrivalAirportID]       INT    NOT NULL,  
+    [DateID]         DATE    NOT NULL,
+    [AirlineID]              INT    NOT NULL,
+    [DepartureAirportID]     INT    NOT NULL,
+    [ArrivalAirportID]       INT    NOT NULL,
 
     [DailyFlightsNumber]            INT    NULL,
     [DailyDelayedFlightsNumber]          INT    NULL,

@@ -5,7 +5,7 @@ BEGIN
 
     DECLARE @CurrentDate DATE;
 
-    -- Use a cursor to process only distinct event dates present in the data
+
     DECLARE date_cursor CURSOR FOR
         SELECT DISTINCT MaintenanceDate FROM [SA].[MaintenanceEvent] ORDER BY MaintenanceDate;
 
@@ -33,18 +33,18 @@ BEGIN
             TRUNCATE TABLE DW.Temp_MaintenanceEvent_Batch;
 
             INSERT INTO DW.Temp_MaintenanceEvent_Batch (
-                MaintenanceEventID, AircraftID, MaintenanceTypeID, LocationID, TechnicianID, MaintenanceDate, 
+                MaintenanceEventID, AircraftID, MaintenanceTypeID, LocationID, TechnicianID, MaintenanceDate,
                 DowntimeHours, LaborHours, LaborCost, TotalPartsCost, TotalMaintenanceCost, DistinctIssuesSolved
             )
             SELECT
-                MaintenanceEventID, AircraftID, MaintenanceTypeID, LocationID, TechnicianID, MaintenanceDate, 
+                MaintenanceEventID, AircraftID, MaintenanceTypeID, LocationID, TechnicianID, MaintenanceDate,
                 DowntimeHours, LaborHours, LaborCost, TotalPartsCost, TotalMaintenanceCost, DistinctIssuesSolved
             FROM [SA].[MaintenanceEvent]
             WHERE MaintenanceDate = @CurrentDate;
 
             IF @@ROWCOUNT = 0
             BEGIN
-                -- This branch should rarely be hit now, since we're looping only over dates with data.
+
                 UPDATE DW.ETL_Log
                 SET ChangeDescription = 'No maintenance events found for date: ' + CONVERT(varchar, @CurrentDate, 101),
                     RowsAffected = 0,

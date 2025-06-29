@@ -35,12 +35,12 @@ BEGIN
     )
     SELECT
       f.FlightDetailID,
-      dep.City + ' Airport' AS DepartureAirportName,   
-      dest.City + ' Airport' AS DestinationAirportName, 
+      dep.City + ' Airport' AS DepartureAirportName,
+      dest.City + ' Airport' AS DestinationAirportName,
       f.DepartureDateTime,
       f.ArrivalDateTime,
       DATEDIFF(MINUTE, f.DepartureDateTime, f.ArrivalDateTime) AS FlightDurationMinutes,
-      a.Model AS AircraftName,        
+      a.Model AS AircraftName,
       f.FlightCapacity,
       f.TotalCost
     FROM SA.FlightDetail AS f

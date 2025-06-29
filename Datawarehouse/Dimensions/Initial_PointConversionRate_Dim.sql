@@ -35,8 +35,8 @@ BEGIN
             sa.ConversionRate,
             sa.CurrencyCode,
             '1950-01-01 00:00:00',
-            NULL,    
-            1        
+            NULL,
+            1
         FROM SA.PointConversionRate sa;
 
         SET @RowsInserted = @@ROWCOUNT;

@@ -1,7 +1,7 @@
 CREATE SCHEMA [SA]
 GO
 
--- Account
+
 CREATE TABLE [SA].[Account] (
   [AccountID] integer PRIMARY KEY,
   [PassengerID] integer NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE [SA].[Account] (
 )
 GO
 
--- AccountTierHistory
+
 CREATE TABLE [SA].[AccountTierHistory] (
   [HistoryID] integer PRIMARY KEY,
   [AccountID] integer NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE [SA].[AccountTierHistory] (
 )
 GO
 
--- Aircraft
+
 CREATE TABLE [SA].[Aircraft] (
   [AircraftID] integer PRIMARY KEY,
   [Model] nvarchar(50),
@@ -42,7 +42,7 @@ CREATE TABLE [SA].[Aircraft] (
 )
 GO
 
--- Airline
+
 CREATE TABLE [SA].[Airline] (
   [AirlineID] integer PRIMARY KEY,
   [Name] nvarchar(100),
@@ -58,7 +58,7 @@ CREATE TABLE [SA].[Airline] (
 )
 GO
 
--- AirlineAirportService
+
 CREATE TABLE [SA].[AirlineAirportService] (
   [ServiceTypeCode] nvarchar(50) NOT NULL,
   [FlightTypeCode] nvarchar(50) NOT NULL,
@@ -75,7 +75,7 @@ CREATE TABLE [SA].[AirlineAirportService] (
 )
 GO
 
--- Airport
+
 CREATE TABLE [SA].[Airport] (
   [AirportID] integer PRIMARY KEY,
   [City] nvarchar(50),
@@ -94,7 +94,7 @@ CREATE TABLE [SA].[Airport] (
 )
 GO
 
--- CrewAssignment
+
 CREATE TABLE [SA].[CrewAssignment] (
   [CrewAssignmentID] integer PRIMARY KEY,
   [FlightDetailID] integer NOT NULL,
@@ -105,7 +105,7 @@ CREATE TABLE [SA].[CrewAssignment] (
 )
 GO
 
--- CrewMember
+
 CREATE TABLE [SA].[CrewMember] (
   [CrewMemberID] integer PRIMARY KEY,
   [PersonID] integer NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE [SA].[CrewMember] (
 )
 GO
 
--- FlightDetail
+
 CREATE TABLE [SA].[FlightDetail] (
   [FlightDetailID] integer PRIMARY KEY,
   [DepartureAirportID] integer NOT NULL,
@@ -133,7 +133,7 @@ CREATE TABLE [SA].[FlightDetail] (
 )
 GO
 
--- FlightOperation
+
 CREATE TABLE [SA].[FlightOperation] (
   [FlightOperationID] integer PRIMARY KEY,
   [FlightDetailID] integer NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE [SA].[FlightOperation] (
 )
 GO
 
--- Item
+
 CREATE TABLE [SA].[Item] (
   [ItemID] INT PRIMARY KEY,
   [ItemName] NVARCHAR(100),
@@ -162,7 +162,7 @@ CREATE TABLE [SA].[Item] (
 )
 GO
 
--- LoyaltyTier
+
 CREATE TABLE [SA].[LoyaltyTier] (
   [LoyaltyTierID] integer PRIMARY KEY,
   [Name] nvarchar(50) NOT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE [SA].[LoyaltyTier] (
 )
 GO
 
--- LoyaltyTransactionType
+
 CREATE TABLE [SA].[LoyaltyTransactionType] (
   [LoyaltyTransactionTypeID] INT PRIMARY KEY,
   [TypeName] NVARCHAR(50),
@@ -184,7 +184,7 @@ CREATE TABLE [SA].[LoyaltyTransactionType] (
 )
 GO
 
--- MaintenanceLocation
+
 CREATE TABLE [SA].[MaintenanceLocation] (
   [LocationID] nvarchar(100) PRIMARY KEY,
   [Name] nvarchar(100),
@@ -197,7 +197,7 @@ CREATE TABLE [SA].[MaintenanceLocation] (
 )
 GO
 
--- MaintenanceType
+
 CREATE TABLE [SA].[MaintenanceType] (
   [MaintenanceTypeID] integer PRIMARY KEY,
   [Name] nvarchar(100),
@@ -209,7 +209,7 @@ CREATE TABLE [SA].[MaintenanceType] (
 )
 GO
 
--- Part
+
 CREATE TABLE [SA].[Part] (
   [PartID] integer PRIMARY KEY,
   [Name] nvarchar(100),
@@ -223,7 +223,7 @@ CREATE TABLE [SA].[Part] (
 )
 GO
 
--- Passenger
+
 CREATE TABLE [SA].[Passenger] (
   [PassengerID] integer PRIMARY KEY,
   [PersonID] integer NOT NULL,
@@ -234,7 +234,7 @@ CREATE TABLE [SA].[Passenger] (
 )
 GO
 
--- Payment
+
 CREATE TABLE [SA].[Payment] (
   [PaymentID] integer PRIMARY KEY,
   [ReservationID] integer NOT NULL,
@@ -252,7 +252,7 @@ CREATE TABLE [SA].[Payment] (
 )
 GO
 
--- Person
+
 CREATE TABLE [SA].[Person] (
   [PersonID] integer PRIMARY KEY,
   [NatCode] nvarchar(20) NOT NULL,
@@ -271,7 +271,7 @@ CREATE TABLE [SA].[Person] (
 )
 GO
 
--- PointConversionRate
+
 CREATE TABLE [SA].[PointConversionRate] (
   [PointConversionRateID] INT PRIMARY KEY,
   [ConversionRate] DECIMAL(18,6) NOT NULL,
@@ -282,7 +282,7 @@ CREATE TABLE [SA].[PointConversionRate] (
 )
 GO
 
--- Points
+
 CREATE TABLE [SA].[Points] (
   [PointsID] integer PRIMARY KEY,
   [AccountID] integer NOT NULL,
@@ -294,7 +294,7 @@ CREATE TABLE [SA].[Points] (
 )
 GO
 
--- PointsTransaction
+
 CREATE TABLE [SA].[PointsTransaction] (
   [PointsTransactionID] INT PRIMARY KEY,
   [AccountID] INT NOT NULL,
@@ -314,7 +314,7 @@ CREATE TABLE [SA].[PointsTransaction] (
 )
 GO
 
--- Reservation
+
 CREATE TABLE [SA].[Reservation] (
   [ReservationID] integer PRIMARY KEY,
   [PassengerID] integer NOT NULL,
@@ -328,7 +328,7 @@ CREATE TABLE [SA].[Reservation] (
 )
 GO
 
--- SeatDetail
+
 CREATE TABLE [SA].[SeatDetail] (
   [SeatDetailID] integer PRIMARY KEY,
   [AircraftID] integer NOT NULL,
@@ -342,7 +342,7 @@ CREATE TABLE [SA].[SeatDetail] (
 )
 GO
 
--- ServiceOffering
+
 CREATE TABLE [SA].[ServiceOffering] (
   [ServiceOfferingID] INT PRIMARY KEY,
   [TravelClassID] INT,
@@ -356,7 +356,7 @@ CREATE TABLE [SA].[ServiceOffering] (
 
 GO
 
--- ServiceOfferingItem
+
 CREATE TABLE [SA].[ServiceOfferingItem] (
   [ServiceOfferingID] INT NOT NULL,
   [ItemID] INT NOT NULL,
@@ -369,7 +369,7 @@ CREATE TABLE [SA].[ServiceOfferingItem] (
 
 GO
 
--- Technician
+
 CREATE TABLE [SA].[Technician] (
   [TechnicianID] INT PRIMARY KEY,
   [PersonID] INT,
@@ -380,7 +380,7 @@ CREATE TABLE [SA].[Technician] (
 )
 GO
 
--- TravelClass
+
 CREATE TABLE [SA].[TravelClass] (
   [TravelClassID] INT PRIMARY KEY,
   [ClassName] NVARCHAR(50),
@@ -393,7 +393,7 @@ CREATE TABLE [SA].[TravelClass] (
 
 GO
 
--- MaintenanceEvent
+
 CREATE TABLE [SA].[MaintenanceEvent] (
   [MaintenanceEventID] INT PRIMARY KEY,
   [AircraftID] INT NOT NULL,
@@ -415,7 +415,7 @@ CREATE TABLE [SA].[MaintenanceEvent] (
 GO
 
 
--- PartReplacement
+
 CREATE TABLE [SA].[PartReplacement] (
   [PartReplacementID] INT PRIMARY KEY,
   [AircraftID] INT NOT NULL,

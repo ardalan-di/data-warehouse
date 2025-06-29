@@ -1,4 +1,4 @@
--- Temp table for staging
+
 IF OBJECT_ID('[DW].[Temp_Airport_table]', 'U') IS NULL
 BEGIN
   CREATE TABLE [DW].[Temp_Airport_table] (

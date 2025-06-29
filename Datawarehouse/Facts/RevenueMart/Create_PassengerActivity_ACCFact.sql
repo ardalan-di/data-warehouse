@@ -1,5 +1,5 @@
 CREATE TABLE [DW].[PassengerActivity_ACCFact] (
-    [PersonKey]              INT PRIMARY KEY,       -- The CURRENT surrogate key for the person
+    [PersonKey]              INT PRIMARY KEY,
     [TotalTicketValue]       INT NULL,
     [TotalAmountPaid]        DECIMAL(18, 2) NULL,
     [TotalMilesFlown]        DECIMAL(18, 2) NULL,
@@ -11,4 +11,4 @@ CREATE TABLE [DW].[PassengerActivity_ACCFact] (
     [MaxFlightDistance]      DECIMAL(18, 2) NULL,
     [MinFlightDistance]      DECIMAL(18, 2) NULL
 );
-GO 
+GO

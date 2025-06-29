@@ -29,10 +29,10 @@ DROP TABLE IF EXISTS [SA].[ServiceOfferingItem];
 DROP TABLE IF EXISTS [SA].[Technician];
 DROP TABLE IF EXISTS [SA].[TravelClass];
 
--- Drop ETL Log table
+
 DROP TABLE IF EXISTS [SA].[ETL_Log];
 
--- Drop all ETL procedures in alphabetical order
+
 IF OBJECT_ID('[SA].[ETL_Account]', 'P') IS NOT NULL DROP PROCEDURE [SA].[ETL_Account];
 IF OBJECT_ID('[SA].[ETL_AccountTierHistory]', 'P') IS NOT NULL DROP PROCEDURE [SA].[ETL_AccountTierHistory];
 IF OBJECT_ID('[SA].[ETL_Aircraft]', 'P') IS NOT NULL DROP PROCEDURE [SA].[ETL_Aircraft];
@@ -65,7 +65,7 @@ IF OBJECT_ID('[SA].[ETL_ServiceOfferingItem]', 'P') IS NOT NULL DROP PROCEDURE [
 IF OBJECT_ID('[SA].[ETL_Technician]', 'P') IS NOT NULL DROP PROCEDURE [SA].[ETL_Technician];
 IF OBJECT_ID('[SA].[ETL_TravelClass]', 'P') IS NOT NULL DROP PROCEDURE [SA].[ETL_TravelClass];
 
--- Drop the main ETL procedure
+
 IF OBJECT_ID('[SA].[Main_ETL]', 'P') IS NOT NULL DROP PROCEDURE [SA].[Main_ETL];
 
 DROP SCHEMA IF EXISTS [SA];

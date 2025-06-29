@@ -131,7 +131,7 @@ CREATE TABLE [Source].[LoyaltyTransactionType] (
 )
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[MaintenanceLocation] (
   [LocationID]   nvarchar(100) PRIMARY KEY,
   [Name]          nvarchar(100),
@@ -141,7 +141,7 @@ CREATE TABLE [Source].[MaintenanceLocation] (
 );
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[MaintenanceType] (
   [MaintenanceTypeID]  integer PRIMARY KEY,
   [Name]               nvarchar(100),
@@ -150,7 +150,7 @@ CREATE TABLE [Source].[MaintenanceType] (
 );
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[Part] (
   [PartID]                     integer PRIMARY KEY,
   [Name]                   nvarchar(100),
@@ -265,11 +265,11 @@ CREATE TABLE [Source].[ServiceOfferingItem] (
 )
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[Technician] (
     [TechnicianID] INT PRIMARY KEY,
-    [PersonID] INT,                   
-    [Specialty] NVARCHAR(100),        
+    [PersonID] INT,
+    [Specialty] NVARCHAR(100),
 );
 GO
 
@@ -281,7 +281,7 @@ CREATE TABLE [Source].[TravelClass] (
 )
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[MaintenanceEvent] (
   MaintenanceEventID INT PRIMARY KEY,
   AircraftID INT NOT NULL,
@@ -299,7 +299,7 @@ CREATE TABLE [Source].[MaintenanceEvent] (
 );
 GO
 
--- Maintenance Data Mart
+
 CREATE TABLE [Source].[PartReplacement] (
   PartReplacementID INT PRIMARY KEY,
   AircraftID INT NOT NULL,

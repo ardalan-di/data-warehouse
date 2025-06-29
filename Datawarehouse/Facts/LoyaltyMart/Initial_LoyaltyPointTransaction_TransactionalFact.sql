@@ -6,10 +6,10 @@ BEGIN
 	DECLARE @StartDate date;
 	DECLARE @EndDate date;
 
-	SELECT 
+	SELECT
 		@StartDate = MIN(CAST(TransactionDate AS DATE)),
 		@EndDate = MAX(CAST(TransactionDate AS DATE))
-	FROM 
+	FROM
 		[SA].[PointsTransaction];
 
 	IF @StartDate IS NULL
@@ -19,31 +19,31 @@ BEGIN
 	END
 
 	DECLARE @CurrentDate date = @StartDate;
-	
+
 	WHILE @CurrentDate <= @EndDate
 	BEGIN
 		DECLARE @LogID BIGINT;
 		DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 		DECLARE @RowCount INT;
 
-		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+		INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 		VALUES ('Initial_LoyaltyPoint_TransactionalFact', 'LoyaltyPointTransaction_TransactionalFact', 'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101), @StartTime, 'Running');
-		
+
 		SET @LogID = SCOPE_IDENTITY();
 
 		BEGIN TRY
 			DELETE FROM [DW].[LoyaltyPointTransaction_TransactionalFact]
 			WHERE CAST([TransactionDateKey] AS DATE) = @CurrentDate;
-			
+
 			INSERT INTO [DW].[Temp_DailyLoyaltyTransactions]
-			SELECT 
-                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID, 
-                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate, 
+			SELECT
+                PointsTransactionID, AccountID, TransactionDate, LoyaltyTransactionTypeID,
+                PointsChange, BalanceAfterTransaction, CurrencyValue, ConversionRate,
                 PointConversionRateID, ServiceOfferingID, FlightDetailID
 			FROM [SA].[PointsTransaction]
 			WHERE CAST(TransactionDate AS DATE) = @CurrentDate;
 
-			IF @@ROWCOUNT = 0 
+			IF @@ROWCOUNT = 0
 			BEGIN
 				UPDATE DW.ETL_Log SET ChangeDescription = 'No loyalty transactions found for date: ' + CONVERT(varchar, @CurrentDate, 101), RowsAffected = 0, DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()), Status = 'Success' WHERE LogID = @LogID;
 				SET @CurrentDate = DATEADD(day, 1, @CurrentDate);
@@ -51,12 +51,12 @@ BEGIN
 			END
 
 			INSERT INTO [DW].[Temp_EnrichedLoyaltyData] (
-                TransactionDateKey, PersonKey, AccountKey, LoyaltyTierKey, TransactionTypeKey, 
-                ConversionRateKey, FlightKey, ServiceOfferingKey, PointsChange, CurrencyValue, 
+                TransactionDateKey, PersonKey, AccountKey, LoyaltyTierKey, TransactionTypeKey,
+                ConversionRateKey, FlightKey, ServiceOfferingKey, PointsChange, CurrencyValue,
                 ConversionRateSnapshot, BalanceAfterTransaction
             )
 			SELECT
-                -- Dimension Keys
+
 				pt.TransactionDate,
 				ISNULL(dp.PersonKey, -1),
 				pt.AccountID,
@@ -64,7 +64,7 @@ BEGIN
 				pt.LoyaltyTransactionTypeID,
 				ISNULL(dcr.ConversionRateKey, -1),
 				pt.FlightDetailID,
-				ISNULL(dso.ServiceOfferingID, -1), 
+				ISNULL(dso.ServiceOfferingID, -1),
                 pt.PointsChange,
                 pt.CurrencyValue,
                 ISNULL(dcr.Rate, 0),
@@ -73,7 +73,7 @@ BEGIN
 			INNER JOIN [SA].[Account] acc ON pt.AccountID = acc.AccountID
 			INNER JOIN [SA].[Passenger] pass ON acc.PassengerID = pass.PassengerID
 			LEFT JOIN [DW].[DimPerson] dp ON pass.PersonID = dp.PersonID
-				AND pt.TransactionDate >= dp.EffectiveFrom 
+				AND pt.TransactionDate >= dp.EffectiveFrom
 				AND pt.TransactionDate < ISNULL(dp.EffectiveTo, '9999-12-31')
             LEFT JOIN [SA].[AccountTierHistory] ath ON pt.AccountID = ath.AccountID
                 AND pt.TransactionDate >= ath.EffectiveFrom
@@ -94,15 +94,15 @@ BEGIN
 			SELECT
 				ed.TransactionDateKey, ed.PersonKey, ed.AccountKey, ed.LoyaltyTierKey, ed.TransactionTypeKey,
                 ed.ConversionRateKey, ed.FlightKey, ed.ServiceOfferingKey,
-                -- Calculated Measures
+
                 CASE WHEN ed.PointsChange > 0 THEN ed.PointsChange ELSE 0 END,
                 CASE WHEN ed.PointsChange < 0 THEN ABS(ed.PointsChange) ELSE 0 END,
-                -- Direct Measures
+
                 ed.CurrencyValue,
                 ed.ConversionRateSnapshot,
                 ed.BalanceAfterTransaction
 			FROM [DW].[Temp_EnrichedLoyaltyData] ed;
-			
+
 			SET @RowCount = @@ROWCOUNT;
 
 			TRUNCATE TABLE [DW].[Temp_DailyLoyaltyTransactions];

@@ -6,10 +6,10 @@ BEGIN
     DECLARE @StartDate date;
     DECLARE @EndDate date;
 
-    SELECT 
+    SELECT
         @StartDate = MIN(CAST(ActualDepartureDateTime AS DATE)),
         @EndDate = MAX(CAST(ActualDepartureDateTime AS DATE))
-    FROM 
+    FROM
         [SA].[FlightOperation];
 
     IF @StartDate IS NULL
@@ -19,16 +19,16 @@ BEGIN
     END
 
     DECLARE @CurrentDate date = @StartDate;
-    
+
     WHILE @CurrentDate <= @EndDate
     BEGIN
         DECLARE @LogID BIGINT;
         DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
         DECLARE @RowCount INT;
 
-        INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+        INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
         VALUES ('Initial_FlightPerformance_TransactionalFact', 'FlightPerformance_TransactionalFact', 'Procedure started for date: ' + CONVERT(varchar, @CurrentDate, 101), @StartTime, 'Running');
-        
+
         SET @LogID = SCOPE_IDENTITY();
 
         BEGIN TRY
@@ -37,7 +37,7 @@ BEGIN
             FROM [SA].[FlightOperation]
             WHERE CAST(ActualDepartureDateTime AS DATE) = @CurrentDate;
 
-            IF @@ROWCOUNT = 0 
+            IF @@ROWCOUNT = 0
             BEGIN
                 UPDATE DW.ETL_Log SET ChangeDescription = 'No flight operations found for date: ' + CONVERT(varchar, @CurrentDate, 101), RowsAffected = 0, DurationSec = DATEDIFF(SECOND, @StartTime, SYSUTCDATETIME()), Status = 'Success' WHERE LogID = @LogID;
                 SET @CurrentDate = DATEADD(day, 1, @CurrentDate);
@@ -61,7 +61,7 @@ BEGIN
             FROM [DW].[Temp_DailyFlightOperations] fo
             INNER JOIN [SA].[FlightDetail] fd ON fo.FlightDetailID = fd.FlightDetailID
             INNER JOIN [SA].[Aircraft] ac ON fd.AircraftID = ac.AircraftID;
-            
+
             INSERT INTO [DW].[FlightPerformance_TransactionalFact] (
                 ScheduledDepartureId, ScheduledArrivalId, ActualDepartureId, ActualArrivalId,
                 DepartureAirportId, ArrivalAirportId, AircraftId, AirlineId,
@@ -71,14 +71,14 @@ BEGIN
             SELECT
                 ef.ScheduledDepartureDateTime, ef.ScheduledArrivalDateTime, ef.ActualDepartureDateTime, ef.ActualArrivalDateTime,
                 ef.DepartureAirportID, ef.ArrivalAirportID, ef.AircraftID, ef.AirlineID,
-                ef.DelayMinutes, 
                 ef.DelayMinutes,
-                DATEDIFF(MINUTE, ef.ActualDepartureDateTime, ef.ActualArrivalDateTime), 
+                ef.DelayMinutes,
+                DATEDIFF(MINUTE, ef.ActualDepartureDateTime, ef.ActualArrivalDateTime),
                 DATEDIFF(MINUTE, ef.ScheduledDepartureDateTime, ef.ScheduledArrivalDateTime),
                 ef.LoadFactor,
                 ef.DelaySeverityScore
             FROM [DW].[Temp_EnrichedFlightPerformanceData] ef;
-            
+
             SET @RowCount = @@ROWCOUNT;
 
             TRUNCATE TABLE [DW].[Temp_DailyFlightOperations];
@@ -96,7 +96,7 @@ BEGIN
         SET @CurrentDate = DATEADD(day, 1, @CurrentDate);
     END;
 
-    -- Consistent final message with "Initial" prefix
+
     RAISERROR('Initial FlightPerformance_TransactionalFact loading process has completed.', 0, 1) WITH NOWAIT;
     SET NOCOUNT OFF;
 END

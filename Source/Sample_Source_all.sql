@@ -1,5 +1,5 @@
 
-INSERT INTO Source.Airline 
+INSERT INTO Source.Airline
   (AirlineID, Name, Country, FoundedDate, HeadquartersNumber, FleetSize, Website, Current_IATA_Code) VALUES
 (1, 'Emirates',           'UAE',       '1985-03-25', '+97143179999', 269, 'www.emirates.com',       'EK'),
 (2, 'Lufthansa',          'Germany',   '1953-01-06', '+496922960',   316, 'www.lufthansa.com',      'LH'),

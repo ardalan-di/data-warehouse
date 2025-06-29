@@ -3,7 +3,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- List of all Initial Dimension ETL procedures
+
     DECLARE @procs TABLE (ProcName NVARCHAR(128));
     INSERT INTO @procs (ProcName) VALUES
         (N'Initial_Date_Dim'),
@@ -30,7 +30,7 @@ BEGIN
     FETCH NEXT FROM proc_cursor INTO @ProcName;
     WHILE @@FETCH_STATUS = 0
     BEGIN
-        -- Check existence with correct schema and proc name, and run
+
         IF OBJECT_ID(N'DW.' + @ProcName, 'P') IS NOT NULL
         BEGIN
             SET @sql = N'EXEC [DW].[' + @ProcName + N']';
@@ -47,6 +47,6 @@ BEGIN
 END
 GO
 
--- Example: Run all dimension initial ETLs
+
 EXEC [DW].[Main_Dim_Initial_ETL];
 GO

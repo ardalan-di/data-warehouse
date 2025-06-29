@@ -41,8 +41,8 @@ BEGIN
       a.FleetSize,
       a.Website,
       a.Current_IATA_Code,
-      NULL,      
-      NULL      
+      NULL,
+      NULL
     FROM SA.Airline AS a;
 
     SET @RowsInserted = @@ROWCOUNT;

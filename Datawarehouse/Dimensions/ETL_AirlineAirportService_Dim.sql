@@ -1,4 +1,4 @@
--- Incremental ETL for DimAirlineAirportService
+
 CREATE OR ALTER PROCEDURE [DW].[ETL_AirlineAirportService_Dim]
 AS
 BEGIN

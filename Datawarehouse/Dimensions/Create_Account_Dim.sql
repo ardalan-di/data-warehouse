@@ -1,8 +1,8 @@
 CREATE TABLE [DW].[DimAccount] (
-  [AccountID] INT PRIMARY KEY,           
-  [PassengerName] NVARCHAR(100),         
-  [RegistrationDate] DATETIME,           
-  [LoyaltyTierName] NVARCHAR(50)         
+  [AccountID] INT PRIMARY KEY,
+  [PassengerName] NVARCHAR(100),
+  [RegistrationDate] DATETIME,
+  [LoyaltyTierName] NVARCHAR(50)
 )
 GO
 

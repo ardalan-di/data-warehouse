@@ -1,8 +1,8 @@
 CREATE TABLE [DW].[DimTechnician] (
   [Technician_ID] integer PRIMARY KEY,
   [PersonID] INT,
-  [Name] NVARCHAR(100),     
-  [Phone] NVARCHAR(20),     
+  [Name] NVARCHAR(100),
+  [Phone] NVARCHAR(20),
   [Specialty] NVARCHAR(100)
 );
 GO

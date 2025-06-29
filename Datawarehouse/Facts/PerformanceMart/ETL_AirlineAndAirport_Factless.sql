@@ -7,21 +7,21 @@ BEGIN
 	DECLARE @StartTime DATETIME2(3) = SYSUTCDATETIME();
 	DECLARE @RowCount INT;
 
-	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status) 
+	INSERT INTO DW.ETL_Log (ProcedureName, TargetTable, ChangeDescription, ActionTime, Status)
 	VALUES ('Load_AirlineAndAirport_Factless', 'AirlineAndAirport_Factless', 'Procedure started for incremental merge', @StartTime, 'Running');
-		
+
 	SET @LogID = SCOPE_IDENTITY();
 
 	BEGIN TRY
-		
+
 		MERGE [DW].[AirlineAndAirport_Factless] AS Target
 		USING (
-			-- The source is the complete, distinct set of current relationships
+
 			SELECT DISTINCT
 				AirlineID,
 				AirportID
 			FROM (
-				-- Select all departure relationships
+
 				SELECT
 					ac.AirlineID,
 					fd.DepartureAirportID AS AirportID
@@ -29,7 +29,7 @@ BEGIN
 					[SA].[FlightDetail] fd
 				INNER JOIN
 					[SA].[Aircraft] ac ON fd.AircraftID = ac.AircraftID
-				
+
 				UNION
 
 				SELECT

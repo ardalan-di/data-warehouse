@@ -297,7 +297,7 @@ GO
 IF OBJECT_ID('[DW].[Temp_EnrichedLoyaltyData]', 'U') IS NULL
 BEGIN
 CREATE TABLE [DW].[Temp_EnrichedLoyaltyData](
-    -- Dimension Keys
+
 	[TransactionDateKey] [datetime] NOT NULL,
 	[PersonKey] [int] NOT NULL,
 	[AccountKey] [int] NOT NULL,
@@ -306,7 +306,7 @@ CREATE TABLE [DW].[Temp_EnrichedLoyaltyData](
 	[ConversionRateKey] [int] NULL,
 	[FlightKey] [int] NULL,
 	[ServiceOfferingKey] [int] NULL,
-    -- Measures
+
 	[PointsChange] [decimal](18, 2) NOT NULL,
 	[CurrencyValue] [decimal](18, 2) NULL,
 	[ConversionRateSnapshot] [decimal](18, 6) NULL,

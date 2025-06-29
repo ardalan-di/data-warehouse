@@ -1,13 +1,13 @@
 CREATE TABLE [DW].[DimAirline] (
-  [AirlineID] INT PRIMARY KEY,             
+  [AirlineID] INT PRIMARY KEY,
   [Name] NVARCHAR(100),
   [Country] NVARCHAR(50),
   [FoundedYear] INT,
   [FleetSize] INT,
   [Website] NVARCHAR(200),
-  [Current_IATA_Code] NVARCHAR(3) NULL,    
-  [Previous_IATA_Code] NVARCHAR(3) NULL,    
-  [IATA_Code_Changed_Date] DATE NULL       
+  [Current_IATA_Code] NVARCHAR(3) NULL,
+  [Previous_IATA_Code] NVARCHAR(3) NULL,
+  [IATA_Code_Changed_Date] DATE NULL
 );
 GO
 

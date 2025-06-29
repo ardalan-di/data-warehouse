@@ -2,7 +2,7 @@ CREATE OR ALTER PROCEDURE [DW].[Initial_Payment_Dim]
 AS
 BEGIN
   SET NOCOUNT ON;
-  
+
   DECLARE
     @StartTime    DATETIME2(3) = SYSUTCDATETIME(),
     @RowsInserted INT,

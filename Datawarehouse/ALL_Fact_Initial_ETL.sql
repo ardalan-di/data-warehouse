@@ -14,11 +14,11 @@ EXEC [DW].[Initial_PersonPointTransactions_MonthlyFact];
 GO
 EXEC [DW].[Initial_PersonPointTransactions_ACCFact];
 GO
--- EXEC [DW].[Initial_AircraftHealth_MonthlyFact];
+
 GO
 EXEC [DW].[Initial_MaintenanceEvent_TransactionalFact];
 GO
--- EXEC [DW].[Initial_PartReplacement_TransactionalFact];
+
 GO
 EXEC [DW].[Initial_FlightPerformance_TransactionalFact];
 GO

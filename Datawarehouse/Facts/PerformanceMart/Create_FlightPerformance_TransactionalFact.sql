@@ -1,24 +1,24 @@
 CREATE TABLE [DW].[FlightPerformance_TransactionalFact] (
-    [ScheduledDepartureId] DATETIME NULL,  -- from SA.FlightDetail.ScheduledDepartureDateTime
-    [ScheduledArrivalId]   DATETIME NULL,  -- from SA.FlightDetail.ScheduledArrivalDateTime
+    [ScheduledDepartureId] DATETIME NULL,
+    [ScheduledArrivalId]   DATETIME NULL,
 
-    [ActualDepartureId]    DATETIME NULL,  -- from SA.FlightOperation.ActualDepartureDateTime
-    [ActualArrivalId]      DATETIME NULL,  -- from SA.FlightOperation.ActualArrivalDateTime
+    [ActualDepartureId]    DATETIME NULL,
+    [ActualArrivalId]      DATETIME NULL,
 
-    [DepartureAirportId]   INT NULL,       -- from SA.FlightDetail.DepartureAirportID
-    [ArrivalAirportId]     INT NULL,       -- from SA.FlightDetail.ArrivalAirportID
+    [DepartureAirportId]   INT NULL,
+    [ArrivalAirportId]     INT NULL,
 
-    [AircraftId]           INT NULL,       -- from SA.FlightDetail.AircraftID
-    [AirlineId]            INT NULL,       -- from SA.FlightDetail.AirlineID
+    [AircraftId]           INT NULL,
+    [AirlineId]            INT NULL,
 
-    [DepartureDelayMinutes] INT NULL,      -- from SA.FlightOperation.DelayMinutes
-    [ArrivalDelayMinutes]  INT NULL,       -- from SA.FlightOperation.DelayMinutes
+    [DepartureDelayMinutes] INT NULL,
+    [ArrivalDelayMinutes]  INT NULL,
 
-    [FlightDurationActual]   INT NULL,     -- Actual flight duration in minutes (DATEDIFF in ETL)
-    [FlightDurationScheduled] INT NULL,    -- Scheduled flight duration in minutes (DATEDIFF in ETL)
+    [FlightDurationActual]   INT NULL,
+    [FlightDurationScheduled] INT NULL,
 
-    [LoadFactor]            FLOAT NULL,    -- from SA.FlightOperation.LoadFactor
-    [DelaySeverityScore]    FLOAT NULL     -- from SA.FlightOperation.DelaySeverityScore
+    [LoadFactor]            FLOAT NULL,
+    [DelaySeverityScore]    FLOAT NULL
 );
 GO
 
